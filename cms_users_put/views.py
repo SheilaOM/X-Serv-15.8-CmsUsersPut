@@ -10,14 +10,16 @@ from django.template import Context
 
 def barra(request):
     if request.user.is_authenticated():
-        login = "Logged in as " + request.user.username + ". <a href='/logout/'>Logout</a><br/><br/>"
+        login = ("Logged in as " + request.user.username +
+                 ". <a href='/logout/'>Logout</a><br/><br/>")
     else:
         login = "Not logged in. <a href='/login/'>Login</a><br/><br/>"
 
     resp = "Las direcciones disponibles son: "
     lista_pages = Pages.objects.all()
     for page in lista_pages:
-        resp += "<br>-<a href='/" + page.name + "'>" + page.name + "</a> --> " + page.page
+        resp += ("<br>-<a href='/" + page.name + "'>" + page.name +
+                 "</a> --> " + page.page)
 
     plantilla = get_template("miplantilla.html")
     contexto = Context({'title': login, 'content': resp})
@@ -28,7 +30,8 @@ def barra(request):
 @csrf_exempt
 def process(request, req):
     if request.user.is_authenticated():
-        login = "Logged in as " + request.user.username + ". <a href='/logout/'>Logout</a><br/><br/>"
+        login = ("Logged in as " + request.user.username +
+                 ". <a href='/logout/'>Logout</a><br/><br/>")
     else:
         login = "Not logged in. <a href='/login/'>Login</a><br/><br/>"
 
@@ -48,7 +51,8 @@ def process(request, req):
             page = request.POST['page']
             pagina = Pages(name=nombre, page=page)
             pagina.save()
-            resp = "Has creado la página " + nombre + " con ID " + str(pagina.id)
+            resp = ("Has creado la página " + nombre +
+                    " con ID " + str(pagina.id))
         else:
             resp = "Necesitas <a href='/login/'>hacer login</a>"
     elif request.method == "PUT":
@@ -71,11 +75,3 @@ def process(request, req):
     contexto = Context({'title': login, 'content': resp})
 
     return HttpResponse(plantilla.render(contexto))
-
-
-#def milogout(request):                  #No me hace falta, lo hace importando en urls logout
-#    from django.contrib.auth import logout
-#    from django.shortcuts import redirect
-#
-#    logout(request)
-#    return redirect('/')    #En vez de '/' se puede poner barra (el nombre de la funcion que llamo) directamente
